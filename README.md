@@ -4,6 +4,8 @@ Hi, and welcome to my "junk drawer" for my python code. In writing code over the
 
 This codebase has tools for many very different jobs, so I've tried to document what does what.
 
+Also, I did use AI to help me clean up a lot of this code so other people can understand it. Just felt like I should mention that.
+
 ## The "system" Folder
 
 ### terminal.py

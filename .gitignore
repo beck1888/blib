@@ -1,2 +1,11 @@
+# Python bytecode cache
 __pycache__/
+
+# My own testing stuff
 test.py
+
+# Developer Junk
+.vscode/
+
+# MacOS specific files
+.DS_Store
