@@ -6,6 +6,8 @@ This codebase has tools for many very different jobs, so I've tried to document 
 
 Also, I did use AI to help me clean up a lot of this code so other people can understand it. Just felt like I should mention that.
 
+Finally, **this code is meant to be run on macOS.** Parts of it may work on other operating systems, but I haven't tested it there. Some code also assumes you have 1Password set up, certain API keys, etc. Without those, some of this code will not work.
+
 ## The "system" Folder
 
 ### terminal.py
@@ -78,3 +80,58 @@ The file `apis/onepw.py` contains tools for interacting with various APIs, such 
     Please note that this class requires the 1Password CLI to be installed and configured on your system. It also assumes you have an item in your 1Password vault with the title "OpenAI API Key" and a field named "API Key".
 
     The `get_openai_api_key` method is specifically designed to fetch the OpenAI API key from 1Password. If your item or field names differ, you will need to modify the method accordingly.
+
+## The "apple_script" Folder
+The file `apple_script/dialogues.py` contains tools for interacting with AppleScript dialogues with a more pythonic interface. The functions and classes you can use are:
+
+1. **run_applescript(script: str) -> str**
+
+    This function runs an AppleScript command and returns the output as a string. It uses the `subprocess` module to execute the AppleScript code.
+
+    Example usage:
+    ```python
+    from apple_script.dialogues import run_applescript
+
+    output = run_applescript('display dialog "Hello, world!"')
+    print(output)
+    ```
+
+    If the AppleScript execution fails, a `RuntimeError` is raised with the error details.
+
+2. **AppleScriptDialogues**
+
+    This class provides methods to handle AppleScript dialogues for user interaction. The methods available are:
+
+    - **ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None**
+
+        Displays a dialogue box asking the user for input. The user can optionally cancel the dialogue if `allow_cancel` is set to `True`.
+
+        Example usage:
+        ```python
+        from apple_script.dialogues import AppleScriptDialogues
+
+        user_input = AppleScriptDialogues.ask_for_input("Enter your name:", allow_cancel=True)
+        if user_input is None:
+            print("User cancelled the input.")
+        else:
+            print(f"User entered: {user_input}")
+        ```
+
+        Please note it's possible for the method to return an empty string if the user submits the dialogue without entering any text. This is different from cancelling the dialogue, which returns `None`.
+
+    - **show_message(message: str, allow_cancel: bool = False) -> bool**
+
+        Displays a message to the user in a dialogue box. The user can optionally cancel the dialogue if `allow_cancel` is set to `True`.
+
+        Example usage:
+        ```python
+        from apple_script.dialogues import AppleScriptDialogues
+
+        success = AppleScriptDialogues.show_message("Operation completed successfully.", allow_cancel=True)
+        if success:
+            print("User acknowledged the message.")
+        else:
+            print("User cancelled the message.")
+        ```
+
+        Returns `True` if the user clicked "OK" or the primary button, and `False` if they clicked "Cancel" (if allowed). If the AppleScript execution fails, a `RuntimeError` is raised.
