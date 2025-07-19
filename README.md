@@ -8,7 +8,7 @@ This codebase has tools for many very different jobs, so I've tried to document 
 
 ### terminal.py
 
-The file `system/terminal.py` contains tools for interactions with the standard output, including spinners, rich(er) text formatting, and cursor manipulation. The classes you can use are:
+The file `system/terminal.py` contains tools for interactions with the standard in/output, including spinners, rich(er) text formatting, and cursor manipulation. The classes you can use are:
 
 1. **Cursor**
 
@@ -43,3 +43,17 @@ The file `system/terminal.py` contains tools for interactions with the standard 
     Or if it fails, you will see a similar message but with an "x" and the details of the exception will print on a new line.
 
     Please notice how the trailing dots at the end are automatically added. Also, I recommend capitalizing the first letter of the task name and proper nouns only, but the code does not enforce this.
+
+### inputs.py
+The file `system/inputs.py` contains tools for getting user input in a more secure way, such as masked inputs (like passwords). This is an alternative to using the `getpass` module, which works well, but isn't as flexible. The functions you can use are:
+
+1. **get_masked_input(prompt: str) -> str**
+
+    This function prompts the user for input and masks the input characters (like a password field). It returns the input as a string.
+
+    Example usage:
+    ```python
+    from system.inputs import get_masked_input
+
+    password = get_masked_input("Enter your password: ")
+    ```
