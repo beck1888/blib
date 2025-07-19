@@ -4,7 +4,7 @@ Hi, and welcome to my "junk drawer" for my python code. In writing code over the
 
 This codebase has tools for many very different jobs, so I've tried to document what does what.
 
-Also, I did use AI to help me clean up a lot of this code so other people can understand it. Just felt like I should mention that.
+Also, I did use AI to help me clean up a lot of this code so other people can understand it. Just felt like I should mention that. And there is also a lot of code that I had written before, but I had AI help me refactor it for better readability and maintainability.
 
 Finally, **this code is meant to be run on macOS.** Parts of it may work on other operating systems, but I haven't tested it there. Some code also assumes you have 1Password set up, certain API keys, etc. Without those, some of this code will not work.
 
@@ -135,3 +135,62 @@ The file `apple_script/dialogues.py` contains tools for interacting with AppleSc
         ```
 
         Returns `True` if the user clicked "OK" or the primary button, and `False` if they clicked "Cancel" (if allowed). If the AppleScript execution fails, a `RuntimeError` is raised.
+
+## The "audio" Folder
+
+### compiled_audio_driver.py
+
+The file `audio/compiled_audio_driver.py` contains the `CompiledAudioDriver` class, which provides tools for processing and playing audio clips. This includes trimming silences, adjusting playback speed, and concatenating multiple audio clips into a single audio file. The class also supports adding silent delays between clips.
+
+#### `CompiledAudioDriver`
+
+This class allows you to collect multiple audio clips, process them (e.g., trim silences, adjust speed, preserve pitch), and compile them into one continuous audio file for playback.
+
+##### Methods:
+
+1. **`add_clip(file_path: str, speed: float = 1.3, silence_thresh: int = -43, min_silence_len: int = 1, preserve_pitch: bool = True)`**
+
+    Adds an audio clip to the collection after processing it.
+
+    - `file_path`: Path to the audio file.
+    - `speed`: Playback speed multiplier (default is 1.3).
+    - `silence_thresh`: dBFS threshold for silence trimming (default is -43).
+    - `min_silence_len`: Minimum silence length in milliseconds to trim (default is 1 ms).
+    - `preserve_pitch`: If `True`, preserves the original pitch when adjusting speed.
+
+    Example usage:
+    ```python
+    from audio.compiled_audio_driver import CompiledAudioDriver
+
+    driver = CompiledAudioDriver()
+    driver.add_clip("example.mp3", speed=1.5, silence_thresh=-40, min_silence_len=500, preserve_pitch=True)
+    ```
+
+2. **`add_delay(seconds: float)`**
+
+    Adds a silent audio segment of the specified duration to the collection.
+
+    - `seconds`: Duration of silence in seconds.
+
+    Example usage:
+    ```python
+    driver.add_delay(2.5)  # Adds 2.5 seconds of silence
+    ```
+
+3. **`compile()`**
+
+    Concatenates all stored audio clips into one continuous audio file and saves it as WAV bytes.
+
+    Example usage:
+    ```python
+    driver.compile()
+    ```
+
+4. **`play_compiled_audio()`**
+
+    Plays the compiled audio. Make sure to call `compile()` first.
+
+    Example usage:
+    ```python
+    driver.play_compiled_audio()
+    ```
