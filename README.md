@@ -59,3 +59,22 @@ The file `system/inputs.py` contains tools for getting user input in a more secu
 
     password = get_masked_input("Enter your password: ")
     ```
+
+## The "apis" Folder
+The file `apis/onepw.py` contains tools for interacting with various APIs, such as the OnePassword API. The classes you can use are:
+
+1. **OnePasswordFetcher**
+
+    This class provides methods to fetch sensitive information from 1Password items, such as API keys or credentials. It uses the `subprocess` module to call the 1Password CLI and retrieve item details in JSON format.
+
+    Example usage:
+    ```python
+    from apis.onepw import OnePasswordFetcher
+
+    fetcher = OnePasswordFetcher()
+    api_key = fetcher.get_openai_api_key()
+    ```
+
+    Please note that this class requires the 1Password CLI to be installed and configured on your system. It also assumes you have an item in your 1Password vault with the title "OpenAI API Key" and a field named "API Key".
+
+    The `get_openai_api_key` method is specifically designed to fetch the OpenAI API key from 1Password. If your item or field names differ, you will need to modify the method accordingly.
