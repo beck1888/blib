@@ -1,6 +1,9 @@
 # Python bytecode cache
 __pycache__/
 
+## Environment
+.venv/
+
 # My own testing stuff
 test.py
 
