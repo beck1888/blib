@@ -12,10 +12,14 @@ The file `system/terminal.py` contains tools for interactions with the standard 
 
 1. **Cursor**
 
+    Showing and hiding the cursor can be useful to enforce certain terminal styles.
+
     1. *show*: Makes the system cursor appear in the standard output
     2. *hide*: Makes the system cursor hide in the standard output
 
 2. **Spinner**
+
+    The spinner (as seen in similar functionality in tools like npm) is a great way to show your users that a task is working, but may take a while to complete.
 
     The spinner can be accessed using a `with` block like this:
 
