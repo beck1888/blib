@@ -1,196 +1,144 @@
-# Beck's Python Junk Drawer
+## Beck’s Python Junk Drawer
 
-Hi, and welcome to my "junk drawer" for my python code. In writing code over the years, I've amassed quite the collection of code I find myself using all the time. I've decided to lump it all into one standard "library" of sorts that I can quickly dump into my own projects.
+A grab‑bag “standard library” of handy Python utilities I’ve collected (and often refactored with AI) over the years. Designed for quick copy‑&‑paste into your own projects.
 
-This codebase has tools for many very different jobs, so I've tried to document what does what.
+> **Platform & prerequisites**
+> • **macOS only.** Untested elsewhere.
+> • Some tools assume you’ve installed and configured:
+>   • 1Password CLI (`op`)
+>   • Your own API keys (e.g. OpenAI)
 
-Also, I did use AI to help me clean up a lot of this code so other people can understand it. Just felt like I should mention that. And there is also a lot of code that I had written before, but I had AI help me refactor it for better readability and maintainability.
+---
 
-Finally, **this code is meant to be run on macOS.** Parts of it may work on other operating systems, but I haven't tested it there. Some code also assumes you have 1Password set up, certain API keys, etc. Without those, some of this code will not work.
+### 📂 system
 
-## The "system" Folder
+#### **`terminal.py`**
 
-### terminal.py
+Tools for fancier CLI interactions—spinners, cursor control, and richer text.
 
-The file `system/terminal.py` contains tools for interactions with the standard in/output, including spinners, rich(er) text formatting, and cursor manipulation. The classes you can use are:
+* **`Cursor`**
 
-1. **Cursor**
+  * `show()` ▸ unhide the terminal cursor
+  * `hide()` ▸ hide the terminal cursor
 
-    Showing and hiding the cursor can be useful to enforce certain terminal styles.
+* **`Spinner`**
+  A context‑manager spinner (like npm’s) that auto‑handles cursor state, timing, and success/failure indicators.
 
-    1. *show*: Makes the system cursor appear in the standard output
-    2. *hide*: Makes the system cursor hide in the standard output
+  ```python
+  from system.terminal import Spinner
 
-2. **Spinner**
+  with Spinner("Building project"):
+      build_project()
+  ```
 
-    The spinner (as seen in similar functionality in tools like npm) is a great way to show your users that a task is working, but may take a while to complete.
-
-    The spinner can be accessed using a `with` block like this:
-
-    ```python
-    with Spinner("Doing something cool"):
-        ... # Your code here
-    ```
-    Remember to unindent after your done with the code to run in that spinner. The spinner will automatically show and hide the cursor as well as track execution status and time.
-
-    The standard output will show a message like this while the code is running:
+  * **Running:**
 
     ```
-    ⠧ Doing something cool...
+    ⠧ Building project...
+    ```
+  * **On success:**
+
+    ```
+    ✔ Building project [2.15 s]
+    ```
+  * **On error:**
+
+    ```
+    ✖ Building project [2.15 s]
+    Traceback (most recent call last):
+    ...
     ```
 
-    And if the code succeeds you will see a message like this:
-    ```
-    ✔ Doing something cool [4.03 s]
-    ```
+---
 
-    Or if it fails, you will see a similar message but with an "x" and the details of the exception will print on a new line.
+#### **`inputs.py`**
 
-    Please notice how the trailing dots at the end are automatically added. Also, I recommend capitalizing the first letter of the task name and proper nouns only, but the code does not enforce this.
+Secure, flexible masked input (password‑style).
 
-### inputs.py
-The file `system/inputs.py` contains tools for getting user input in a more secure way, such as masked inputs (like passwords). This is an alternative to using the `getpass` module, which works well, but isn't as flexible. The functions you can use are:
+* **`get_masked_input(prompt: str = "Password: ") -> str`**
+  Reads input from the user, displaying a mask character instead of each keystroke.
 
-1. **get_masked_input(prompt: str) -> str**
+  ```python
+  from system.inputs import get_masked_input
 
-    This function prompts the user for input and masks the input characters (like a password field). It returns the input as a string.
+  pwd = get_masked_input("Enter API password: ")
+  ```
 
-    Example usage:
-    ```python
-    from system.inputs import get_masked_input
+---
 
-    password = get_masked_input("Enter your password: ")
-    ```
+### 📂 apis
 
-## The "apis" Folder
-The file `apis/onepw.py` contains tools for interacting with various APIs, such as the OnePassword API. The classes you can use are:
+#### **`onepw.py`**
 
-1. **OnePasswordFetcher**
+Fetch secrets from 1Password via its CLI.
 
-    This class provides methods to fetch sensitive information from 1Password items, such as API keys or credentials. It uses the `subprocess` module to call the 1Password CLI and retrieve item details in JSON format.
+* **`OnePasswordFetcher`**
 
-    Example usage:
-    ```python
-    from apis.onepw import OnePasswordFetcher
+  ```python
+  from apis.onepw import OnePasswordFetcher
 
-    fetcher = OnePasswordFetcher()
-    api_key = fetcher.get_openai_api_key()
-    ```
+  fetcher = OnePasswordFetcher()
+  key = fetcher.get_openai_api_key()
+  ```
 
-    Please note that this class requires the 1Password CLI to be installed and configured on your system. It also assumes you have an item in your 1Password vault with the title "OpenAI API Key" and a field named "API Key".
+  * **Dependencies:** 1Password CLI installed & signed in
+  * **Defaults:** looks for an item named `"OpenAI API Key"` with a field labelled `"API Key"`.
+  * **Customizing:** override item name or field label in the method call.
 
-    The `get_openai_api_key` method is specifically designed to fetch the OpenAI API key from 1Password. If your item or field names differ, you will need to modify the method accordingly.
+---
 
-## The "apple_script" Folder
-The file `apple_script/dialogues.py` contains tools for interacting with AppleScript dialogues with a more pythonic interface. The functions and classes you can use are:
+### 📂 apple\_script
 
-1. **run_applescript(script: str) -> str**
+#### **`dialogues.py`**
 
-    This function runs an AppleScript command and returns the output as a string. It uses the `subprocess` module to execute the AppleScript code.
+Python wrappers around AppleScript dialogs.
 
-    Example usage:
-    ```python
-    from apple_script.dialogues import run_applescript
+* **`run_applescript(script: str) -> str`**
+  Execute raw AppleScript and return its output (or raise `RuntimeError` on failure).
 
-    output = run_applescript('display dialog "Hello, world!"')
-    print(output)
-    ```
+* **`AppleScriptDialogues`**
 
-    If the AppleScript execution fails, a `RuntimeError` is raised with the error details.
+  * `ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None`
+    Show an input dialog; returns the text or `None` if cancelled.
+  * `show_message(message: str, allow_cancel: bool = False) -> bool`
+    Show an alert; returns `True` if “OK” clicked, `False` if cancelled.
 
-2. **AppleScriptDialogues**
+  ```python
+  from apple_script.dialogues import AppleScriptDialogues
 
-    This class provides methods to handle AppleScript dialogues for user interaction. The methods available are:
+  name = AppleScriptDialogues.ask_for_input("Your name:", allow_cancel=True)
+  if name is None:
+      print("Cancelled")
+  else:
+      AppleScriptDialogues.show_message(f"Hello, {name}!")
+  ```
 
-    - **ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None**
+---
 
-        Displays a dialogue box asking the user for input. The user can optionally cancel the dialogue if `allow_cancel` is set to `True`.
+### 📂 audio
 
-        Example usage:
-        ```python
-        from apple_script.dialogues import AppleScriptDialogues
+#### **`compiled_audio_driver.py`**
 
-        user_input = AppleScriptDialogues.ask_for_input("Enter your name:", allow_cancel=True)
-        if user_input is None:
-            print("User cancelled the input.")
-        else:
-            print(f"User entered: {user_input}")
-        ```
+Collect, process, and stitch together audio clips (trimming silence, changing speed, preserving pitch) plus optional silent gaps.
 
-        Please note it's possible for the method to return an empty string if the user submits the dialogue without entering any text. This is different from cancelling the dialogue, which returns `None`.
+* **`CompiledAudioDriver`**
 
-    - **show_message(message: str, allow_cancel: bool = False) -> bool**
+  1. `add_clip(file_path: str, speed: float = 1.3, silence_thresh: int = -43, min_silence_len: int = 1, preserve_pitch: bool = True)`
+     Queue an audio file for processing.
+  2. `add_delay(seconds: float)`
+     Insert silence of given length (in seconds).
+  3. `compile() -> bytes`
+     Process all clips + delays into one WAV buffer.
+  4. `play_compiled_audio()`
+     Play back the compiled track (after `compile()`).
 
-        Displays a message to the user in a dialogue box. The user can optionally cancel the dialogue if `allow_cancel` is set to `True`.
+  ```python
+  from audio.compiled_audio_driver import CompiledAudioDriver
 
-        Example usage:
-        ```python
-        from apple_script.dialogues import AppleScriptDialogues
-
-        success = AppleScriptDialogues.show_message("Operation completed successfully.", allow_cancel=True)
-        if success:
-            print("User acknowledged the message.")
-        else:
-            print("User cancelled the message.")
-        ```
-
-        Returns `True` if the user clicked "OK" or the primary button, and `False` if they clicked "Cancel" (if allowed). If the AppleScript execution fails, a `RuntimeError` is raised.
-
-## The "audio" Folder
-
-### compiled_audio_driver.py
-
-The file `audio/compiled_audio_driver.py` contains the `CompiledAudioDriver` class, which provides tools for processing and playing audio clips. This includes trimming silences, adjusting playback speed, and concatenating multiple audio clips into a single audio file. The class also supports adding silent delays between clips.
-
-#### `CompiledAudioDriver`
-
-This class allows you to collect multiple audio clips, process them (e.g., trim silences, adjust speed, preserve pitch), and compile them into one continuous audio file for playback.
-
-##### Methods:
-
-1. **`add_clip(file_path: str, speed: float = 1.3, silence_thresh: int = -43, min_silence_len: int = 1, preserve_pitch: bool = True)`**
-
-    Adds an audio clip to the collection after processing it.
-
-    - `file_path`: Path to the audio file.
-    - `speed`: Playback speed multiplier (default is 1.3).
-    - `silence_thresh`: dBFS threshold for silence trimming (default is -43).
-    - `min_silence_len`: Minimum silence length in milliseconds to trim (default is 1 ms).
-    - `preserve_pitch`: If `True`, preserves the original pitch when adjusting speed.
-
-    Example usage:
-    ```python
-    from audio.compiled_audio_driver import CompiledAudioDriver
-
-    driver = CompiledAudioDriver()
-    driver.add_clip("example.mp3", speed=1.5, silence_thresh=-40, min_silence_len=500, preserve_pitch=True)
-    ```
-
-2. **`add_delay(seconds: float)`**
-
-    Adds a silent audio segment of the specified duration to the collection.
-
-    - `seconds`: Duration of silence in seconds.
-
-    Example usage:
-    ```python
-    driver.add_delay(2.5)  # Adds 2.5 seconds of silence
-    ```
-
-3. **`compile()`**
-
-    Concatenates all stored audio clips into one continuous audio file and saves it as WAV bytes.
-
-    Example usage:
-    ```python
-    driver.compile()
-    ```
-
-4. **`play_compiled_audio()`**
-
-    Plays the compiled audio. Make sure to call `compile()` first.
-
-    Example usage:
-    ```python
-    driver.play_compiled_audio()
-    ```
+  driver = CompiledAudioDriver()
+  driver.add_clip("intro.mp3", speed=1.5)
+  driver.add_delay(2.0)
+  driver.add_clip("outro.mp3", speed=1.0)
+  driver.compile()
+  driver.play_compiled_audio()
+  ```
