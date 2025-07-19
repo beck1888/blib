@@ -78,9 +78,9 @@ class AppleScriptDialogues:
 
         try:
             run_applescript(script)
-            return True  # User clicked "OK"
         except RuntimeError as e:
             # Catch the specific error for AppleScript execution failure on cancel
             if "AppleScript execution failed" in str(e):
                 return False
             raise  # Re-raise if it's not a known error
+        return True
