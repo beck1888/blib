@@ -82,7 +82,7 @@ class CompiledAudioDriver:
 
         # Log timing in ms
         elapsed_time = time() - start_time
-        print(f"added clip in {elapsed_time * 1000:.2f} milliseconds")
+        # print(f"added clip in {elapsed_time * 1000:.2f} milliseconds")
 
     def add_delay(self, seconds: float):
         """
@@ -102,7 +102,7 @@ class CompiledAudioDriver:
         silent_segment.export(buf, format="wav")
         self._clip_bytes.append(buf.getvalue())
         
-        print(f"added {seconds} second delay")
+        # print(f"added {seconds} second delay")
 
     def compile(self):
         """
@@ -124,7 +124,7 @@ class CompiledAudioDriver:
 
         # Log timing in ms
         elapsed_time = time() - start_time
-        print(f"compiled audio in {elapsed_time * 1000:.2f} milliseconds")
+        # print(f"compiled audio in {elapsed_time * 1000:.2f} milliseconds")
 
         # Audio is considered compiled until changed
         self.needs_recompile = False
@@ -152,4 +152,4 @@ class CompiledAudioDriver:
 
         with open(fp, "wb") as f:
             f.write(self.compiled_audio_bytes)
-        print(f"saved compiled audio to {fp}")
+        # print(f"saved compiled audio to {fp}")
