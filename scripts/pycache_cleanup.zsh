@@ -3,9 +3,9 @@
 # Step 1: Move one directory up
 cd ..
 
-# Step 2: Check if current directory is named 'junkdrawer'
-if [[ "${PWD##*/}" != "junkdrawer" ]]; then
-  echo "Error: This script must be run from inside the 'junkdrawer' directory."
+# Step 2: Check if current directory is named 'blib'
+if [[ "${PWD##*/}" != "blib" ]]; then
+  echo "Error: This script must be run from inside the 'blib' directory."
   exit 1
 fi
 
