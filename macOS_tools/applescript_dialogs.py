@@ -8,58 +8,23 @@ macOS GUI popups using Apple Script.
 import subprocess
 import re
 import os
+from typing import Optional
 
-# Private Methods
+# Helpers
 def __run_applescript(script: str) -> str:
-    """
-    Executes an AppleScript command using the `osascript` CLI tool.
-
-    Args:
-        script (str): The AppleScript code to run.
-
-    Returns:
-        str: The standard output from the AppleScript execution, stripped of trailing whitespace.
-
-    Raises:
-        RuntimeError: If the AppleScript execution fails.
-    """
-    try:
-        result = subprocess.run(
-            ['osascript', '-e', script],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"AppleScript execution failed: {e.stderr.strip()}")
-    
+    result = subprocess.run(
+        ["osascript", "-e", script],
+        stdout=subprocess.PIPE,    # HUSH UP
+        stderr=subprocess.DEVNULL, # THAT GOES FOR YOU TOO
+        text=True
+    )
+    return result.stdout.strip()
 
 def __sanitize_for_applescript(text: str, max_length: int = 250) -> str:
-    """
-    Cleans and escapes a string for safe use in AppleScript dialog boxes.
-
-    This includes:
-      - Escaping double quotes.
-      - Replacing newlines, carriage returns, and tabs with spaces.
-      - Removing non-printable characters.
-      - Truncating long strings to fit within AppleScript dialog limits.
-
-    Args:
-        text (str): The raw string to sanitize.
-        max_length (int): Maximum length for the sanitized string (default: 250).
-
-    Returns:
-        str: A sanitized, escaped, and truncated version of the input string.
-    """
-    sanitized = text.replace('"', '\\"')
-    sanitized = re.sub(r'[\n\r\t]', ' ', sanitized)
-    sanitized = ''.join(c for c in sanitized if c.isprintable())
-
-    if len(sanitized) > max_length:
-        sanitized = sanitized[:max_length - 3] + '...'
-
-    return sanitized
+    text = text.replace('"', '\\"')
+    text = re.sub(r'[\n\r\t]', ' ', text)
+    text = ''.join(c for c in text if c.isprintable())
+    return text[:max_length - 3] + "..." if len(text) > max_length else text
 
 # Public methods
 def popup_ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
@@ -87,37 +52,47 @@ def popup_ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
             return None
         raise
 
-def popup_show_message(message: str, allow_cancel: bool = False, icon_path: str | None = None) -> bool:
-    """
-    Displays an AppleScript dialog box with a message and OK/Cancel buttons.
-    Optionally displays a custom icon (must be .icns or compatible format).
+def popup_show_message(
+    message: str,
+    image_path: Optional[str] = None,
+    buttons: list[str] = ["Cancel", "Okay"],
+    primary_button: str = "Okay",
+    timeout: Optional[int] = None
+) -> Optional[str]:
+    if not buttons:
+        raise ValueError("You must specify at least one button.")
+    if primary_button not in buttons:
+        raise ValueError(f"Primary button '{primary_button}' must be one of: {buttons}")
 
-    Args:
-        message (str): The message to display.
-        allow_cancel (bool): Whether to include a Cancel button.
-        icon_path (str | None): Absolute path to a custom icon file.
+    sanitized_msg = __sanitize_for_applescript(message)
+    button_str = "{" + ", ".join(f'"{__sanitize_for_applescript(b)}"' for b in buttons) + "}"
+    script = f'display dialog "{sanitized_msg}" buttons {button_str} default button "{primary_button}"'
 
-    Returns:
-        bool: True if the user clicked OK, False if they canceled.
-    """
-    message = __sanitize_for_applescript(message)
+    if image_path:
+        full_path = os.path.abspath(image_path)
+        if not os.path.exists(full_path):
+            raise FileNotFoundError(f"Image path '{full_path}' does not exist.")
+        sanitized_icon = full_path.replace('"', '\\"')
+        script += f' with icon POSIX file "{sanitized_icon}"'
 
-    # Build base AppleScript
-    buttons = '{"Cancel", "OK"}' if allow_cancel else '{"OK"}'
-    script = f'display dialog "{message}" buttons {buttons} default button "OK"'
+    if timeout:
+        script += f' giving up after {timeout}'
 
-    # Add custom icon if provided
-    if icon_path:
-        if not os.path.exists(icon_path):
-            raise FileNotFoundError(f"Path '{icon_path}' doesn't exist.")
-        
-        icon_path = icon_path.replace('"', '\\"')
-        script += f' with icon POSIX file "{icon_path}"'
+    # # Make sure we return just the button text
+    # script += '\nreturn button returned'
 
     try:
-        __run_applescript(script)
-    except RuntimeError as e:
-        if "AppleScript execution failed" in str(e):
-            return False
-        raise
-    return True
+        result = __run_applescript(script)
+
+        # Get just the button clicked
+        start_of_relevant_output = result.find('button returned:') + 16 # Account for length of what we find
+        end_of_relevant_output = result.find(',') # First comma separates returned values
+        clean_result = result[start_of_relevant_output: end_of_relevant_output].strip() # Why Not
+
+        # Check if the user clicked anything (no timeout)
+        if len(clean_result) > 0:
+            return clean_result
+        else:
+            return None
+    except subprocess.CalledProcessError:
+        return None
