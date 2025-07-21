@@ -20,6 +20,35 @@ def run_applescript(script: str) -> str:
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"AppleScript execution failed: {e.stderr.strip()}")
     
+import re
+
+def sanitize_for_applescript(text: str, max_length: int = 250) -> str:
+    """
+    Sanitize input for safe use in AppleScript dialogues.
+    
+    Escapes double quotes, removes control characters (like newlines),
+    trims excessively long strings, and prevents basic AppleScript injection.
+
+    :param text: The input string to sanitize.
+    :param max_length: The maximum length of the string.
+    :return: A sanitized string safe for AppleScript dialogues.
+    """
+
+    # Escape double quotes so AppleScript doesn't break
+    sanitized = text.replace('"', '\\"')
+
+    # Replace newlines, carriage returns, tabs with a space
+    sanitized = re.sub(r'[\n\r\t]', ' ', sanitized)
+
+    # Remove other non-printable control characters (except standard spaces)
+    sanitized = ''.join(c for c in sanitized if c.isprintable())
+
+    # Truncate to reasonable AppleScript dialog limits
+    if len(sanitized) > max_length:
+        sanitized = sanitized[:max_length - 3] + '...'
+
+    return sanitized
+    
 class AppleScriptDialogues:
     """
     A class to handle AppleScript dialogues for user interaction.
@@ -37,6 +66,9 @@ class AppleScriptDialogues:
         Raises:
             RuntimeError: If the AppleScript execution fails.
         """
+        # Sanitize the prompt to remove string issues that might cause Apple Script to fail
+        prompt = sanitize_for_applescript(prompt)
+
         if allow_cancel:
             script = f'display dialog "{prompt}" default answer "" buttons {{"Cancel", "OK"}} default button "OK"'
         else:
@@ -70,6 +102,8 @@ class AppleScriptDialogues:
         Raises:
             RuntimeError: If the AppleScript execution fails.
         """
+        # Sanitize the prompt to remove string issues that might cause Apple Script to fail
+        message = sanitize_for_applescript(message)
 
         if allow_cancel:
             script = f'display dialog "{message}" buttons {{"Cancel", "OK"}} default button "OK"'
