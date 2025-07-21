@@ -1,4 +1,5 @@
 import socket
+from urllib.parse import urlparse
 
 def is_online(timeout=3) -> bool:
     """
@@ -24,29 +25,27 @@ def is_online(timeout=3) -> bool:
         return True
     except OSError:
         return False
-    
 
-def is_site_reachable(hostname, port=80, timeout=3):
+def is_site_reachable(url_or_hostname, port=None, timeout=3):
     """
-    Check if a specific site or server is reachable over the network.
-
-    Attempts to resolve the hostname and establish a TCP connection to the
-    given port (default is 80 for HTTP).
+    Check if a site is reachable. Accepts either a plain hostname or a full URL.
 
     Parameters:
-        hostname (str): The hostname or IP address of the site.
-        port (int): The port number to connect to (default is 80).
+        url_or_hostname (str): A domain name or full URL.
+        port (int, optional): Port number to use (defaults to 443 for HTTPS, 80 for HTTP).
         timeout (int): Timeout in seconds for the connection attempt.
 
     Returns:
         bool: True if the site is reachable, False otherwise.
-
-    Raises:
-        None
     """
     try:
+        # Parse URL if scheme is present
+        parsed = urlparse(url_or_hostname)
+        hostname = parsed.hostname or url_or_hostname
+        port = port or (443 if parsed.scheme == 'https' else 80)
+
         socket.setdefaulttimeout(timeout)
         with socket.create_connection((hostname, port), timeout):
             return True
-    except (socket.timeout, socket.gaierror, socket.error):
+    except (socket.timeout, socket.gaierror, socket.error, ValueError):
         return False
