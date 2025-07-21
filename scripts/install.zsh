@@ -29,4 +29,4 @@ find "$TARGET_DIR" -type f ! \( -name "*.py" -o -name "*.zsh" \) -exec rm {} \;
 # Delete empty directories
 find "$TARGET_DIR" -type d -empty -delete
 
-echo "${GREEN}✔︎${NC} Installed Beck's Junkdrawer Library"
+echo "${GREEN}INSTALLED:${NC}  Beck's Junkdrawer Library"
