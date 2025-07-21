@@ -1,11 +1,28 @@
-"""A module for handling user inputs in the terminal."""
+"""
+inputs.py
+
+An alternative to getpass with more flexibility.
+"""
 
 import sys
 import tty
 import termios
 
 def get_masked_input(prompt="Password: ", mask_char="*"):
-    """Prompt for input and mask the characters as the user types."""
+    """
+    Prompt the user for input from the terminal with each character masked.
+
+    This function is intended for securely gathering sensitive input (like passwords)
+    without echoing the actual characters typed. Instead, a masking character (default '*')
+    is shown for each typed character. Supports basic backspace handling.
+
+    Parameters:
+        prompt (str): The message to display to the user before input begins.
+        mask_char (str): The character to display in place of typed input.
+
+    Returns:
+        str: The user input as a plain string (not masked).
+    """
     sys.stdout.write(prompt)
     sys.stdout.flush()
 
@@ -15,21 +32,21 @@ def get_masked_input(prompt="Password: ", mask_char="*"):
     result = []
 
     try:
-        tty.setraw(fd)
+        tty.setraw(fd)  # Set terminal to raw mode (character-by-character input)
         while True:
             ch = sys.stdin.read(1)
             if ch in ('\r', '\n'):
-                sys.stdout.write('\r\n')  # Force full carriage return and newline
+                sys.stdout.write('\r\n')  # Move to new line on Enter
                 break
-            elif ch == '\x7f':  # Backspace/delete key
+            elif ch == '\x7f':  # Handle backspace/delete
                 if result:
                     result.pop()
-                    sys.stdout.write('\b \b')  # Backspace, overwrite, backspace again
+                    sys.stdout.write('\b \b')  # Erase last masked character
             else:
                 result.append(ch)
-                sys.stdout.write(mask_char)
+                sys.stdout.write(mask_char)  # Show mask character
             sys.stdout.flush()
     finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Restore terminal settings
 
     return ''.join(result)

@@ -1,21 +1,21 @@
-"""This module provides a simple spinner and cursor control for command-line applications."""
+"""
+terminal.py
+
+Provides methods for common terminal operations.
+"""
 
 import sys
 import threading
 import time
 
-class Cursor:
-    """A class to control the visibility of the terminal cursor."""
 
-    @staticmethod
-    def show():
-        """Show the terminal cursor."""
-        sys.stdout.write("\033[?25h")
+def show_cursor():
+    """Writes the escape code to show the terminal cursor."""
+    sys.stdout.write("\033[?25h")
 
-    @staticmethod
-    def hide():
-        """Hide the terminal cursor."""
-        sys.stdout.write("\033[?25l")
+def hide_cursor():
+    """Writes the escape code to hide the terminal cursor."""
+    sys.stdout.write("\033[?25l")
 
 class Spinner:
     """A simple terminal spinner to indicate ongoing tasks."""
@@ -37,7 +37,7 @@ class Spinner:
 
     def start(self):
         """Start the spinner."""
-        Cursor.hide()  # Hide the cursor when spinner starts
+        hide_cursor()  # Hide the cursor when spinner starts
         self.running = True
         self.start_time = time.time()  # Record the start time
         self._thread = threading.Thread(target=self._spin, daemon=True)
@@ -82,4 +82,4 @@ class Spinner:
                 sys.stdout.flush()
         finally:
             # Make sure the cursor is always shown at the end, even if an error occurs
-            Cursor.show()
+            show_cursor()

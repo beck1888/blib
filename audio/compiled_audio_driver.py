@@ -1,8 +1,13 @@
+"""
+compiled_audio_driver.py
+
+Provides a class for easily making one audio file out of many.
+"""
+
 import io
 from pydub import AudioSegment, silence
 from pydub.playback import play
 from pydub.effects import speedup
-import os
 from time import time
 
 # Defaults

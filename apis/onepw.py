@@ -1,3 +1,9 @@
+"""
+onepw.py
+
+Provides a utility function to fetch items from 1Password (assuming it's installed).
+"""
+
 import subprocess
 import json
 

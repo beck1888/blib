@@ -4,3 +4,6 @@
 - [ ] Make a readme
 - [ ] Create an install script
 - [ ] Create an updater script
+
+- [ ] Add a save method for the compiled audio driver
+- [ ] Standardize documentation methods

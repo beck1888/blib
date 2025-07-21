@@ -1,8 +1,29 @@
+"""
+openai.py
+
+Provides a utility function to quickly send prompts to OpenAI's GPT-4o model.
+
+This module contains:
+- quick_prompt: A function to send a prompt to OpenAI's GPT-4o and return the response.
+"""
+
 from openai import OpenAI
 
 def quick_prompt(prompt: str, api_key: str = None, **kwargs) -> str:
-    """Allows you to quickly send a prompt to gpt-4o if all you need is a quick ai response. 
-    Make sure to pass an API key if it's not loaded in your env."""
+    """
+    Sends a prompt to OpenAI's GPT-4o model and returns the response as a string.
+
+    Args:
+        prompt (str): The user prompt to send to the model.
+        api_key (str, optional): OpenAI API key. If not provided, uses the key from the environment.
+        **kwargs: Optional keyword arguments. Supports 'system_prompt' to prepend a system message.
+
+    Keyword Args:
+        system_prompt (str, optional): A system message to prepend to the chat history.
+
+    Returns:
+        str: The model's response as a string.
+    """
 
     # Init the client with the api key from env if not passed directly
     if api_key is None:
