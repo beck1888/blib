@@ -7,6 +7,7 @@ macOS GUI popups using Apple Script.
 
 import subprocess
 import re
+import os
 
 # Private Methods
 def __run_applescript(script: str) -> str:
@@ -86,23 +87,32 @@ def popup_ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
             return None
         raise
 
-def popup_show_message(message: str, allow_cancel: bool = False) -> bool:
+def popup_show_message(message: str, allow_cancel: bool = False, icon_path: str | None = None) -> bool:
     """
     Displays an AppleScript dialog box with a message and OK/Cancel buttons.
+    Optionally displays a custom icon (must be .icns or compatible format).
 
     Args:
         message (str): The message to display.
         allow_cancel (bool): Whether to include a Cancel button.
+        icon_path (str | None): Absolute path to a custom icon file.
 
     Returns:
-        bool: True if the user clicked OK, False if they canceled (when `allow_cancel` is True).
+        bool: True if the user clicked OK, False if they canceled.
     """
     message = __sanitize_for_applescript(message)
 
-    if allow_cancel:
-        script = f'display dialog "{message}" buttons {{"Cancel", "OK"}} default button "OK"'
-    else:
-        script = f'display dialog "{message}" buttons {{"OK"}} default button "OK"'
+    # Build base AppleScript
+    buttons = '{"Cancel", "OK"}' if allow_cancel else '{"OK"}'
+    script = f'display dialog "{message}" buttons {buttons} default button "OK"'
+
+    # Add custom icon if provided
+    if icon_path:
+        if not os.path.exists(icon_path):
+            raise FileNotFoundError(f"Path '{icon_path}' doesn't exist.")
+        
+        icon_path = icon_path.replace('"', '\\"')
+        script += f' with icon POSIX file "{icon_path}"'
 
     try:
         __run_applescript(script)
