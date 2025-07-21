@@ -1,6 +1,6 @@
 from openai import OpenAI
 
-def one_off_prompt(prompt: str, api_key: str = None, **kwargs) -> str:
+def quick_prompt(prompt: str, api_key: str = None, **kwargs) -> str:
     """Allows you to quickly send a prompt to gpt-4o if all you need is a quick ai response. 
     Make sure to pass an API key if it's not loaded in your env."""
 
