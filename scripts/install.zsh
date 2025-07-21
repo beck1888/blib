@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# Script URL: https://raw.githubusercontent.com/beck1888/junkdrawer/refs/heads/main/scripts/install.sh
+# Script URL: https://raw.githubusercontent.com/beck1888/junkdrawer/refs/heads/main/scripts/install.zsh
 
 # Colors
 GREEN='\033[0;32m'
