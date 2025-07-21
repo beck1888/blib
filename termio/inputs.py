@@ -1,14 +1,17 @@
 """
 inputs.py
 
-An alternative to getpass with more flexibility.
+Provides utilities for terminal input with enhanced flexibility.
+
+This module contains:
+- get_masked_input: Prompts the user for input with each character masked.
 """
 
 import sys
 import tty
 import termios
 
-def get_masked_input(prompt="Password: ", mask_char="*"):
+def get_masked_input(prompt: str = "Password: ", mask_char: str = "*") -> str:
     """
     Prompt the user for input from the terminal with each character masked.
 
@@ -16,12 +19,15 @@ def get_masked_input(prompt="Password: ", mask_char="*"):
     without echoing the actual characters typed. Instead, a masking character (default '*')
     is shown for each typed character. Supports basic backspace handling.
 
-    Parameters:
+    Args:
         prompt (str): The message to display to the user before input begins.
         mask_char (str): The character to display in place of typed input.
 
     Returns:
         str: The user input as a plain string (not masked).
+
+    Raises:
+        ValueError: If the terminal settings cannot be restored after input.
     """
     sys.stdout.write(prompt)
     sys.stdout.flush()

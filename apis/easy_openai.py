@@ -23,6 +23,9 @@ def quick_prompt(prompt: str, api_key: str = None, **kwargs) -> str:
 
     Returns:
         str: The model's response as a string.
+
+    Raises:
+        openai.error.OpenAIError: If there is an issue with the API request.
     """
 
     # Init the client with the api key from env if not passed directly

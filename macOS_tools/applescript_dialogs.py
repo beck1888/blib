@@ -12,6 +12,18 @@ from typing import Optional
 
 # Helpers
 def __run_applescript(script: str) -> str:
+    """
+    Executes an AppleScript command and returns the output.
+
+    Args:
+        script (str): The AppleScript command to execute.
+
+    Returns:
+        str: The output of the AppleScript command.
+
+    Raises:
+        subprocess.CalledProcessError: If the AppleScript command fails.
+    """
     result = subprocess.run(
         ["osascript", "-e", script],
         stdout=subprocess.PIPE,    # HUSH UP
@@ -21,6 +33,17 @@ def __run_applescript(script: str) -> str:
     return result.stdout.strip()
 
 def __sanitize_for_applescript(text: str, max_length: int = 250) -> str:
+    """
+    Sanitizes a string for use in AppleScript by escaping special characters
+    and truncating it to a maximum length.
+
+    Args:
+        text (str): The text to sanitize.
+        max_length (int): The maximum allowed length of the sanitized text.
+
+    Returns:
+        str: The sanitized and truncated text.
+    """
     text = text.replace('"', '\\"')
     text = re.sub(r'[\n\r\t]', ' ', text)
     text = ''.join(c for c in text if c.isprintable())
@@ -37,6 +60,9 @@ def popup_ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
 
     Returns:
         str | None: The user's input as a string, or None if canceled (when `allow_cancel` is True).
+
+    Raises:
+        RuntimeError: If the AppleScript execution fails.
     """
     prompt = __sanitize_for_applescript(prompt)
 
@@ -59,6 +85,24 @@ def popup_show_message(
     primary_button: str = "Okay",
     timeout: Optional[int] = None
 ) -> Optional[str]:
+    """
+    Displays an AppleScript dialog box with a message and customizable buttons.
+
+    Args:
+        message (str): The message to display in the dialog box.
+        image_path (Optional[str]): Path to an image to display as an icon. Defaults to None.
+        buttons (list[str]): List of button labels to display. Defaults to ["Cancel", "Okay"].
+        primary_button (str): The default button to highlight. Defaults to "Okay".
+        timeout (Optional[int]): Time in seconds before the dialog auto-closes. Defaults to None.
+
+    Returns:
+        Optional[str]: The label of the button clicked by the user, or None if the dialog times out.
+
+    Raises:
+        ValueError: If no buttons are provided or the primary button is not in the button list.
+        FileNotFoundError: If the specified image path does not exist.
+        subprocess.CalledProcessError: If the AppleScript execution fails.
+    """
     if not buttons:
         raise ValueError("You must specify at least one button.")
     if primary_button not in buttons:

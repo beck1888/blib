@@ -1,16 +1,30 @@
+"""
+capture_page.py
+
+Provides a utility function to capture a screenshot of a webpage using a headless browser.
+
+This module contains:
+- screenshot_url: Captures a screenshot of a given URL and saves it as a PNG file.
+"""
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 
 def screenshot_url(url: str, output_path: str, minimum_delay: float | None = None):
     """
-    Opens a headless browser, navigates to a given URL, waits for the page to fully load,
-    optionally delays further if specified, and captures a screenshot to the given file path.
+    Captures a screenshot of a webpage using a headless Chrome browser.
 
-    :param url: The webpage URL to capture.
-    :param output_path: The file path (absolute or relative) to save the screenshot as a .png file.
-    :param minimum_delay: Optional delay (in seconds) to wait after initial page load. Default is None.
-    :raises ValueError: If output_path does not end in '.png'
+    Args:
+        url (str): The URL of the webpage to capture.
+        output_path (str): The file path (absolute or relative) to save the screenshot as a PNG file.
+                           Must end with '.png'.
+        minimum_delay (float | None, optional): Additional delay (in seconds) to wait after the page 
+                                                loads. Defaults to None.
+
+    Raises:
+        ValueError: If the output_path does not end with '.png'.
+        selenium.common.exceptions.WebDriverException: If there is an issue with the browser setup or execution.
     """
     if not output_path.lower().endswith(".png"):
         raise ValueError("Output file must end in '.png'")

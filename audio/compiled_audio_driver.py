@@ -24,6 +24,14 @@ class CompiledAudioDriver:
     """
 
     def __init__(self):
+        """
+        Initializes the CompiledAudioDriver instance.
+
+        Attributes:
+            _clip_bytes (list): List of processed audio clips stored as WAV bytes.
+            compiled_audio_bytes (bytes or None): The compiled audio as WAV bytes.
+            needs_recompile (bool): Indicates if the audio needs recompilation.
+        """
         self._clip_bytes = []             # List of processed clips as WAV bytes
         self.compiled_audio_bytes = None  # Compiled full audio as WAV bytes
         self.needs_recompile = True       # Track when file changes and needs to be compiled again
@@ -37,14 +45,14 @@ class CompiledAudioDriver:
         preserve_pitch: bool = DEFAULT_PRESERVE_PITCH,
     ):
         """
-        Load an audio file, trim silences, adjust speed (with optional
-        pitch preservation), then store as WAV bytes.
+        Adds an audio clip to the compilation after processing.
 
-        :param file_path: Path to the audio file.
-        :param speed: Playback speed multiplier (1.0 = original).
-        :param silence_thresh: dBFS threshold for silence trimming.
-        :param min_silence_len: Minimum silence length (ms) to trim.
-        :param preserve_pitch: If True, keep original pitch when speeding.
+        Args:
+            file_path (str): Path to the audio file.
+            speed (float): Playback speed multiplier (1.0 = original speed).
+            silence_thresh (int): dBFS threshold for silence trimming.
+            min_silence_len (int): Minimum silence length (ms) to trim.
+            preserve_pitch (bool): If True, preserves the original pitch when adjusting speed.
         """
         # Set needs recompile flag to on because a change is made
         self.needs_recompile = True
@@ -86,9 +94,10 @@ class CompiledAudioDriver:
 
     def add_delay(self, seconds: float):
         """
-        Add a silent audio segment of the specified duration.
-        
-        :param seconds: Duration of silence in seconds.
+        Adds a silent audio segment of the specified duration.
+
+        Args:
+            seconds (float): Duration of silence in seconds.
         """
         # Set needs recompile flag to on because a change is made
         self.needs_recompile = True
@@ -106,8 +115,10 @@ class CompiledAudioDriver:
 
     def compile(self):
         """
-        Concatenate all stored clips into one AudioSegment,
-        export as WAV bytes, and save to compiled_audio_bytes.
+        Concatenates all stored audio clips into one continuous audio segment.
+
+        This method processes all stored clips, combines them, and saves the
+        result as WAV bytes in `compiled_audio_bytes`. Marks the audio as compiled.
         """
         # Timing
         start_time = time()
@@ -131,7 +142,10 @@ class CompiledAudioDriver:
 
     def play_compiled_audio(self):
         """
-        Play the compiled audio. Call compile() first.
+        Plays the compiled audio.
+
+        If the audio has been modified since the last compilation, it will
+        automatically recompile before playback.
         """
         if self.needs_recompile:
             self.compile()
@@ -142,10 +156,13 @@ class CompiledAudioDriver:
 
     def save_compiled_audio(self, fp: str):
         """
-        Save the compiled audio to a specified file path.
+        Saves the compiled audio to a specified file path.
 
-        :param fp: File path (relative or absolute) to save the compiled audio.
-        :raises RuntimeError: If compiled audio is missing.
+        Args:
+            fp (str): File path (relative or absolute) to save the compiled audio.
+
+        Raises:
+            RuntimeError: If the compiled audio is missing or not generated.
         """
         if self.needs_recompile:
             self.compile()

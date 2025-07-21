@@ -35,3 +35,5 @@ def example_function(param1: int, param2: str = "default") -> bool:
 🔍 Be concise but descriptive. If the code is unclear, make a best guess based on naming and structure.
 
 Format all output as valid Python code with the new docstrings added in-place.
+
+Finally, make sure to add a docstring for the module as well. Add it if it's missing, or update it if there is already one.

@@ -1,14 +1,27 @@
+"""
+screenshot.py
+
+Provides a utility function to capture screenshots on macOS and save them as PNG files.
+"""
+
 import subprocess
 import os
 
 def take_screenshot(file_path: str) -> str:
     """
-    Takes a screenshot on macOS and saves it as a PNG to the specified file path.
+    Captures a screenshot on macOS and saves it as a PNG file to the specified path.
 
-    :param file_path: The absolute or relative path where the screenshot will be saved.
-    :returns str: The file path where the image eas saved.
-    :raises FileExistsError: If the file already exists at the given path.
-    :raises RuntimeError: If the screenshot command fails.
+    Args:
+        file_path (str): The absolute or relative path where the screenshot will be saved. 
+                         Must end with ".png".
+
+    Returns:
+        str: The file path where the screenshot was saved.
+
+    Raises:
+        FileExistsError: If a file already exists at the specified path.
+        ValueError: If the file path does not end with ".png".
+        RuntimeError: If the screenshot command fails.
     """
     # Expand and validate the full path
     file_path = os.path.abspath(file_path)

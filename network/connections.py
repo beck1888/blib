@@ -1,3 +1,13 @@
+"""
+connections.py
+
+Provides utility functions to check internet connectivity and site reachability.
+
+This module contains:
+- is_online: Checks if the computer is connected to the internet.
+- is_site_reachable: Checks if a specific site or URL is reachable.
+"""
+
 import socket
 from urllib.parse import urlparse
 
@@ -9,14 +19,11 @@ def is_online(timeout=3) -> bool:
     server (Google's public DNS at 8.8.8.8 on port 53) to determine if the
     machine has internet access.
 
-    Parameters:
+    Args:
         timeout (int): The timeout in seconds for the connection attempt.
 
     Returns:
         bool: True if the connection was successful (i.e., online), False otherwise.
-
-    Raises:
-        None
     """
     try:
         socket.setdefaulttimeout(timeout)
@@ -26,17 +33,23 @@ def is_online(timeout=3) -> bool:
     except OSError:
         return False
 
-def is_site_reachable(url_or_hostname, port=None, timeout=3):
+def is_site_reachable(url_or_hostname: str, port: int = None, timeout: int = 3) -> bool:
     """
     Check if a site is reachable. Accepts either a plain hostname or a full URL.
 
-    Parameters:
-        url_or_hostname (str): A domain name or full URL.
+    Args:
+        url_or_hostname (str): A domain name or full URL to check.
         port (int, optional): Port number to use (defaults to 443 for HTTPS, 80 for HTTP).
         timeout (int): Timeout in seconds for the connection attempt.
 
     Returns:
         bool: True if the site is reachable, False otherwise.
+
+    Raises:
+        ValueError: If the provided URL or hostname is invalid.
+        socket.timeout: If the connection attempt times out.
+        socket.gaierror: If the hostname cannot be resolved.
+        socket.error: For other socket-related errors.
     """
     try:
         # Parse URL if scheme is present

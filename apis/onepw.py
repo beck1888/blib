@@ -11,11 +11,17 @@ def fetch_item_field(item_name: str, field_label: str, cli_path: str = "op") -> 
     """
     Fetches a specific field's value from a 1Password item.
 
-    :param item_name: The name of the item in 1Password.
-    :param field_label: The label of the field to retrieve.
-    :param cli_path: Path to the 1Password CLI binary.
-    :return: The value of the specified field.
-    :raises RuntimeError, ValueError: On failure or if the field is not found.
+    Args:
+        item_name (str): The name of the item in 1Password.
+        field_label (str): The label of the field to retrieve.
+        cli_path (str): Path to the 1Password CLI binary. Defaults to "op".
+
+    Returns:
+        str: The value of the specified field.
+
+    Raises:
+        RuntimeError: If the 1Password CLI command fails.
+        ValueError: If the specified field is not found in the item.
     """
     try:
         result = subprocess.run(
@@ -37,8 +43,13 @@ def fetch_item_field(item_name: str, field_label: str, cli_path: str = "op") -> 
 
 def get_openai_api_key() -> str:
     """
-    Convenience function to fetch the OpenAI API key from 1Password.
+    Fetches the OpenAI API key from 1Password.
 
-    :return: The OpenAI API key string.
+    Returns:
+        str: The OpenAI API key string.
+
+    Raises:
+        RuntimeError: If the 1Password CLI command fails.
+        ValueError: If the "credential" field is not found in the "OpenAI API Key" item.
     """
     return fetch_item_field("OpenAI API Key", "credential")

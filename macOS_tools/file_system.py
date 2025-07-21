@@ -1,12 +1,21 @@
+"""
+file_system.py
+
+Provides utility functions for file system operations, such as creating sparse files.
+"""
+
 import os
 
 def create_fake_file_of_size(file_path: str, size_in_mb: int) -> None:
     """
-    Create a sparse file at the specified path with the given size in MB.
+    Creates a sparse file at the specified path with the given size in megabytes.
 
     Args:
         file_path (str): The absolute or relative path of the file to create.
         size_in_mb (int): The size of the file in megabytes.
+
+    Returns:
+        None
 
     Raises:
         ValueError: If the size is negative.
