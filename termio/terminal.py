@@ -1,7 +1,7 @@
 """
 terminal.py
 
-Provides methods for common terminal operations.
+Provides methods for common terminal (stdout) operations.
 """
 
 import sys
@@ -16,6 +16,73 @@ def show_cursor():
 def hide_cursor():
     """Writes the escape code to hide the terminal cursor."""
     sys.stdout.write("\033[?25l")
+
+class ColorOut:
+    """
+    A utility class to print colored text to the terminal using ANSI escape codes.
+    """
+
+    COLOR_CODES = {
+        "red": "\033[31m",
+        "orange": "\033[38;5;208m",  # Approximate orange using 256-color mode
+        "yellow": "\033[33m",
+        "green": "\033[32m",
+        "blue": "\033[34m",
+        "purple": "\033[35m",
+        "black": "\033[30m",
+        "white": "\033[97m",
+        "bold": "\033[1m",
+        "italics": "\033[3m",
+        "strikethrough": "\033[9m",
+        "reset": "\033[0m"
+    }
+
+    def __init__(self):
+        pass
+
+    def _print(self, color_code: str, text: str, newline: bool = True):
+        output = f"{self.COLOR_CODES[color_code]}{text}{self.COLOR_CODES['reset']}"
+        if newline:
+            print(output)
+        else:
+            print(output, end='')
+
+    def red(self, text: str, newline: bool = True):
+        self._print("red", text, newline)
+
+    def orange(self, text: str, newline: bool = True):
+        self._print("orange", text, newline)
+
+    def blue(self, text: str, newline: bool = True):
+        self._print("blue", text, newline)
+
+    def yellow(self, text: str, newline: bool = True):
+        self._print("yellow", text, newline)
+
+    def bold(self, text: str, newline: bool = True):
+        self._print("bold", text, newline)
+
+    def green(self, text: str, newline: bool = True):
+        self._print("green", text, newline)
+
+    def purple(self, text: str, newline: bool = True):
+        self._print("purple", text, newline)
+
+    def black(self, text: str, newline: bool = True):
+        self._print("black", text, newline)
+
+    def white(self, text: str, newline: bool = True):
+        self._print("white", text, newline)
+
+    def bold(self, text: str, newline: bool = True):
+        self._print("bold", text, newline)
+
+    def italics(self, text: str, newline: bool = True):
+        self._print("italics", text, newline)
+
+    def strikethrough(self, text: str, newline: bool = True):
+        self._print("strikethrough", text, newline)
+    
 
 class Spinner:
     """A simple terminal spinner to indicate ongoing tasks."""
