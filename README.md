@@ -11,3 +11,5 @@ curl -sSL https://raw.githubusercontent.com/beck1888/junkdrawer/refs/heads/main/
 ```
 
 You may also want to install the `requirements.txt` file. Alternatively, you can look at the source for just the files you want and just install those requirements. Please note that the install script removes any files that aren't `.py` or `.zsh` so the requirements file is only viewable on GitHub.
+
+To update this "library", run the install command again.
