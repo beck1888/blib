@@ -8,7 +8,13 @@ import sys
 import threading
 import time
 
+# Common symbols a dev might want to use
+CAUTION = '⚠'
+CHECK_MARK = '✔'
+X_MARK = '✗'
 
+
+# Functions
 def show_cursor():
     """Writes the escape code to show the terminal cursor."""
     sys.stdout.write("\033[?25h")
