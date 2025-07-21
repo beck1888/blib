@@ -11,7 +11,7 @@ curl -sSL https://raw.githubusercontent.com/beck1888/blib/refs/heads/main/script
 ```
 
 To update this "library", run the install command again.
-
+<!-- 
 ## Example
 ```python
 # Example usage of multiple functions
@@ -39,4 +39,4 @@ with Spinner("Asking ChatGPT"):
 
 # Show the response
 popup_show_message(ai_response)
-```
+``` -->
