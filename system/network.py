@@ -24,3 +24,29 @@ def is_online(timeout=3) -> bool:
         return True
     except OSError:
         return False
+    
+
+def is_site_reachable(hostname, port=80, timeout=3):
+    """
+    Check if a specific site or server is reachable over the network.
+
+    Attempts to resolve the hostname and establish a TCP connection to the
+    given port (default is 80 for HTTP).
+
+    Parameters:
+        hostname (str): The hostname or IP address of the site.
+        port (int): The port number to connect to (default is 80).
+        timeout (int): Timeout in seconds for the connection attempt.
+
+    Returns:
+        bool: True if the site is reachable, False otherwise.
+
+    Raises:
+        None
+    """
+    try:
+        socket.setdefaulttimeout(timeout)
+        with socket.create_connection((hostname, port), timeout):
+            return True
+    except (socket.timeout, socket.gaierror, socket.error):
+        return False
