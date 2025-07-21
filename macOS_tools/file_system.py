@@ -15,7 +15,7 @@ def create_fake_file_of_size(file_path: str, size_in_mb: int) -> None:
     if size_in_mb < 0:
         raise ValueError("Size must be a non-negative integer.")
     
-    size_in_bytes = size_in_mb * 1024 * 1024
+    size_in_bytes = size_in_mb * 1000 * 1000
     with open(file_path, 'wb') as f:
         f.seek(size_in_bytes - 1)
         f.write(b'\0')
