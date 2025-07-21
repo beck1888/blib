@@ -61,7 +61,7 @@ def __sanitize_for_applescript(text: str, max_length: int = 250) -> str:
     return sanitized
 
 # Public methods
-def ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
+def popup_ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
     """
     Displays an AppleScript dialog box asking the user for text input.
 
@@ -86,7 +86,7 @@ def ask_for_input(prompt: str, allow_cancel: bool = False) -> str | None:
             return None
         raise
 
-def show_message(message: str, allow_cancel: bool = False) -> bool:
+def popup_show_message(message: str, allow_cancel: bool = False) -> bool:
     """
     Displays an AppleScript dialog box with a message and OK/Cancel buttons.
 
