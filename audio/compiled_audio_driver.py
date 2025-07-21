@@ -24,8 +24,9 @@ class CompiledAudioDriver:
     """
 
     def __init__(self):
-        self._clip_bytes = []          # List of processed clips as WAV bytes
+        self._clip_bytes = []             # List of processed clips as WAV bytes
         self.compiled_audio_bytes = None  # Compiled full audio as WAV bytes
+        self.needs_recompile = True       # Track when file changes and needs to be compiled again
 
     def add_clip(
         self,
@@ -45,6 +46,9 @@ class CompiledAudioDriver:
         :param min_silence_len: Minimum silence length (ms) to trim.
         :param preserve_pitch: If True, keep original pitch when speeding.
         """
+        # Set needs recompile flag to on because a change is made
+        self.needs_recompile = True
+
         # Timing
         start_time = time()
 
@@ -86,6 +90,9 @@ class CompiledAudioDriver:
         
         :param seconds: Duration of silence in seconds.
         """
+        # Set needs recompile flag to on because a change is made
+        self.needs_recompile = True
+
         # Create silent audio segment
         silence_duration_ms = int(seconds * 1000)  # Convert to milliseconds
         silent_segment = AudioSegment.silent(duration=silence_duration_ms)
@@ -119,12 +126,15 @@ class CompiledAudioDriver:
         elapsed_time = time() - start_time
         print(f"compiled audio in {elapsed_time * 1000:.2f} milliseconds")
 
+        # Audio is considered compiled until changed
+        self.needs_recompile = False
+
     def play_compiled_audio(self):
         """
         Play the compiled audio. Call compile() first.
         """
-        if not self.compiled_audio_bytes:
-            raise RuntimeError("No compiled audio: call compile() first.")
+        if self.needs_recompile:
+            self.compile()
 
         buf = io.BytesIO(self.compiled_audio_bytes)
         segment = AudioSegment.from_file(buf, format="wav")
@@ -137,8 +147,8 @@ class CompiledAudioDriver:
         :param fp: File path (relative or absolute) to save the compiled audio.
         :raises RuntimeError: If compiled audio is missing.
         """
-        if not self.compiled_audio_bytes:
-            raise RuntimeError("No compiled audio: call compile() first.")
+        if self.needs_recompile:
+            self.compile()
 
         with open(fp, "wb") as f:
             f.write(self.compiled_audio_bytes)
