@@ -28,7 +28,7 @@ echo "${GREEN}✔︎ Files copied into ./${TARGET_DIR}${NC}"
 
 # Remove non .py/.zsh files
 echo "${YELLOW}2) Cleaning up non-Python/Zsh files...${NC}"
-find "$TARGET_DIR" -type f ! \( -name "*.py" -o -name "*.zsh" \) -exec rm -v {} \;
+find "$TARGET_DIR" -type f ! \( -name "*.py" -o -name "*.sh" \) -exec rm -v {} \;
 
 # Delete empty directories
 echo "${YELLOW}3)  Removing empty directories...${NC}"
