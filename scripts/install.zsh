@@ -17,7 +17,7 @@ mkdir -p "$TARGET_DIR"
 # Download and extract repo (no git history)
 TEMP_DIR=$(mktemp -d)
 echo "${GREEN}1)  Downloading code from GitHub...${NC}"
-curl -L https://github.com/beck1888/junkdrawer/archive/refs/heads/main.tar.gz | tar -xz -C "$TEMP_DIR"
+curl -sL https://github.com/beck1888/junkdrawer/archive/refs/heads/main.tar.gz | tar -xz -C "$TEMP_DIR"
 
 # Move contents into junkdrawer/
 mv "$TEMP_DIR"/junkdrawer-main/* "$TARGET_DIR"/ 2>/dev/null
