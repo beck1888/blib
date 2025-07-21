@@ -129,3 +129,17 @@ class CompiledAudioDriver:
         buf = io.BytesIO(self.compiled_audio_bytes)
         segment = AudioSegment.from_file(buf, format="wav")
         play(segment)
+
+    def save_compiled_audio(self, fp: str):
+        """
+        Save the compiled audio to a specified file path.
+
+        :param fp: File path (relative or absolute) to save the compiled audio.
+        :raises RuntimeError: If compiled audio is missing.
+        """
+        if not self.compiled_audio_bytes:
+            raise RuntimeError("No compiled audio: call compile() first.")
+
+        with open(fp, "wb") as f:
+            f.write(self.compiled_audio_bytes)
+        print(f"saved compiled audio to {fp}")
