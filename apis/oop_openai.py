@@ -70,3 +70,12 @@ class OOP_Openai:
             'content': self.__ephemeral_gen()
         })
         return self.chat_log[-1]['content'] # Return the AI generated text
+    
+    def __str__(self):
+        # Returns a formatted string of the chat history
+        chat_history_string = ""
+
+        for message in self.chat_log:
+            chat_history_string += f"{message['role'].upper()}: {message['content']}\n"
+
+        return chat_history_string
