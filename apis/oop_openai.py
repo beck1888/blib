@@ -55,21 +55,22 @@ class OOP_Openai:
         ).choices[0].message.content
         client.close()
         return response
-
-    def add_user_message(self, user_message: str):
-        # Puts a user message at the end of the chat but doesn't generate anything
-        self.chat_log.append({
-            'role': 'user',
-            'content': user_message
-        })
-
-    def run_assistant_turn(self) -> str:
+    
+    def __run_assistant_turn(self) -> str:
         # Generates the assistant message
         self.chat_log.append({
             'role': 'assistant',
             'content': self.__ephemeral_gen()
         })
         return self.chat_log[-1]['content'] # Return the AI generated text
+
+    def post_user_message(self, user_message: str):
+        # Puts a user message at the end of the chat and responds to it
+        self.chat_log.append({
+            'role': 'user',
+            'content': user_message
+        })
+        self.__run_assistant_turn()
     
     def __str__(self):
         # Returns a formatted string of the chat history
