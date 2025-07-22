@@ -76,8 +76,10 @@ class AI:
 
 
     def temp_message(self, prompt: str) -> str:
-        # Uses the client to respond to a chat but does NOT save to the chat history
+        # Uses the client to respond to a chat but does NOT save to the chat history.
+        # It also doesn't use past context. Just the system prompt if given and the user prompt.
         # Useful for prompts that need a response but shouldn't be referenced in further requests
+        # and that shouldn't contain past context (sandboxed request).
 
         print("WARNING: You've called a method that hasn't been tested for logic yet.") # I wrote this on the plane and couldn't test it yet
 
