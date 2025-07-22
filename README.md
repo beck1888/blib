@@ -40,3 +40,7 @@ with Spinner("Asking ChatGPT"):
 # Show the response
 popup_show_message(ai_response)
 ``` -->
+
+## Why some old commits are "unverified"
+
+So I sign all my commits for best practice, but I accidentally committed a file which had secrets and so I had to scrub it from all git history and then force push the new history which messes with those commits which is why they say unverified (even tho they were before) but rather than resigning and overwriting data I'll just leave them as unverified and preserve the original commit data and just make sure all future commits are signed (which they are) but that doesn't mean past commits are not trustworthy it's just they weren't re-signed.
