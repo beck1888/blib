@@ -1,7 +1,7 @@
 import openai
 import os
 
-class OOP_Openai:
+class AI:
     def __init__(self, 
                  system_prompt: str = None, 
                  model: str = 'gpt-4o',
