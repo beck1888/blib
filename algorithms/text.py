@@ -1,3 +1,18 @@
+"""
+text.py
+
+A collection of text processing utilities, including string similarity,
+pattern matching, normalization, and more.
+
+Functions:
+    levenshtein(s1, s2): Compute the Levenshtein distance between two strings.
+    kmp_search(text, pattern): Perform Knuth-Morris-Pratt pattern matching.
+    is_palindrome(s): Check if a string is a palindrome.
+    slugify(text): Convert text to a URL-safe slug.
+    normalize(text): Normalize text by removing accents and converting to lowercase.
+    text_similarity(s1, s2): Calculate normalized similarity between two strings.
+"""
+
 import unicodedata
 import re
 from typing import List
@@ -6,6 +21,13 @@ from typing import List
 def levenshtein(s1: str, s2: str) -> int:
     """
     Compute the Levenshtein (edit) distance between two strings.
+
+    Args:
+        s1 (str): The first string.
+        s2 (str): The second string.
+
+    Returns:
+        int: The Levenshtein distance between the two strings.
     """
     if len(s1) < len(s2):
         return levenshtein(s2, s1)
@@ -25,8 +47,14 @@ def levenshtein(s1: str, s2: str) -> int:
 
 def kmp_search(text: str, pattern: str) -> List[int]:
     """
-    Knuth-Morris-Pratt (KMP) pattern matching algorithm.
-    Returns list of starting indices where pattern is found in text.
+    Perform Knuth-Morris-Pratt (KMP) pattern matching algorithm.
+
+    Args:
+        text (str): The text to search within.
+        pattern (str): The pattern to search for.
+
+    Returns:
+        List[int]: A list of starting indices where the pattern is found in the text.
     """
     def build_lps(pat):
         lps = [0] * len(pat)
@@ -66,6 +94,12 @@ def kmp_search(text: str, pattern: str) -> List[int]:
 def is_palindrome(s: str) -> bool:
     """
     Check if a string is a palindrome (ignoring case and non-alphanumerics).
+
+    Args:
+        s (str): The string to check.
+
+    Returns:
+        bool: True if the string is a palindrome, False otherwise.
     """
     cleaned = re.sub(r'[^a-zA-Z0-9]', '', s).lower()
     return cleaned == cleaned[::-1]
@@ -74,6 +108,12 @@ def is_palindrome(s: str) -> bool:
 def slugify(text: str) -> str:
     """
     Convert text to a URL-safe slug.
+
+    Args:
+        text (str): The input text to convert.
+
+    Returns:
+        str: A URL-safe slug generated from the input text.
     """
     text = normalize(text)
     text = re.sub(r'[^\w\s-]', '', text)
@@ -83,7 +123,13 @@ def slugify(text: str) -> str:
 
 def normalize(text: str) -> str:
     """
-    Normalize text: lowercase, strip, remove accents.
+    Normalize text by removing accents, converting to lowercase, and stripping whitespace.
+
+    Args:
+        text (str): The input text to normalize.
+
+    Returns:
+        str: The normalized text.
     """
     text = unicodedata.normalize('NFKD', text)
     text = text.encode('ascii', 'ignore').decode('utf-8')
@@ -93,7 +139,13 @@ def normalize(text: str) -> str:
 def text_similarity(s1: str, s2: str) -> float:
     """
     Calculate normalized similarity between two strings using Levenshtein distance.
-    Returns a float between 0 (no similarity) and 1 (identical).
+
+    Args:
+        s1 (str): The first string.
+        s2 (str): The second string.
+
+    Returns:
+        float: A value between 0 (no similarity) and 1 (identical), representing the similarity.
     """
     max_len = max(len(s1), len(s2))
     if max_len == 0:

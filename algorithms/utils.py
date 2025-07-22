@@ -1,7 +1,9 @@
 """
 utils.py
 
-Bonus Cool Stuff:
+A collection of utility decorators and functions for enhancing Python code.
+
+Features:
 - memoize(f): Cache results of expensive function calls.
 - retry_on_failure(f, retries=3): Retry a function on failure.
 - timeit(f): Benchmark how long a function takes.
@@ -15,7 +17,13 @@ import traceback
 
 def memoize(f):
     """
-    Caches the result of function calls based on arguments.
+    Cache the result of function calls based on their arguments.
+
+    Args:
+        f (Callable): The function to memoize.
+
+    Returns:
+        Callable: A wrapped function with caching enabled.
 
     Example:
         @memoize
@@ -35,12 +43,15 @@ def memoize(f):
 
 def retry_on_failure(retries=3, delay=0.5, exceptions=(Exception,)):
     """
-    Retries a function if it raises an exception.
+    Retry a function if it raises an exception.
 
     Args:
-        retries (int): How many times to retry.
-        delay (float): Delay in seconds between retries.
-        exceptions (tuple): Exception types to catch.
+        retries (int): The maximum number of retry attempts.
+        delay (float): The delay in seconds between retries.
+        exceptions (tuple): A tuple of exception types to catch.
+
+    Returns:
+        Callable: A wrapped function that retries on failure.
 
     Example:
         @retry_on_failure(retries=5)
@@ -65,7 +76,13 @@ def retry_on_failure(retries=3, delay=0.5, exceptions=(Exception,)):
 
 def timeit(f):
     """
-    Prints the execution time of a function.
+    Measure and print the execution time of a function.
+
+    Args:
+        f (Callable): The function to time.
+
+    Returns:
+        Callable: A wrapped function that prints its execution time.
 
     Example:
         @timeit
@@ -84,14 +101,17 @@ def timeit(f):
 
 def safe_eval(expr: str, vars: dict = {}) -> any:
     """
-    Evaluates simple expressions in a safe environment.
+    Evaluate simple expressions in a restricted environment.
 
     Args:
         expr (str): The expression to evaluate.
-        vars (dict): Whitelisted variables to expose.
+        vars (dict): A dictionary of whitelisted variables to expose.
 
     Returns:
-        The result of the evaluated expression.
+        Any: The result of the evaluated expression.
+
+    Raises:
+        Exception: If the expression is invalid or unsafe.
 
     Example:
         safe_eval("a + b", {"a": 2, "b": 3}) -> 5
