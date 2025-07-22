@@ -1,3 +1,7 @@
+if input("STOP! This script is very verbose and not recommended beyond small projects. Continue (y/n)? ").lower() != 'y':
+    print("Exiting...")
+    exit(0)
+
 import os
 import datetime
 from pathlib import Path
