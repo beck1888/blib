@@ -11,6 +11,7 @@ Functions:
     slugify(text): Convert text to a URL-safe slug.
     normalize(text): Normalize text by removing accents and converting to lowercase.
     text_similarity(s1, s2): Calculate normalized similarity between two strings.
+    fuzzy_search(target, options): Perform a fuzzy search on a list of strings and return the closest matches ranked by similarity.
 """
 
 import unicodedata
@@ -152,3 +153,20 @@ def text_similarity(s1: str, s2: str) -> float:
         return 1.0
     distance = levenshtein(s1, s2)
     return 1 - distance / max_len
+
+
+def fuzzy_search(target: str, options: List[str], max_options: int = 5) -> List[str]:
+    """
+    Perform a fuzzy search on a list of strings and return the closest matches ranked by similarity.
+
+    Args:
+        target (str): The string to search for.
+        options (List[str]): The list of strings to search within.
+        max_options (int): The maximum number of closest matches to return.
+
+    Returns:
+        List[str]: A list of the closest matches ranked by similarity.
+    """
+    ranked_options = sorted(options, key=lambda option: text_similarity(target, option), reverse=True)
+    return ranked_options[:max_options]
+
