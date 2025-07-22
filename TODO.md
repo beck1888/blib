@@ -4,7 +4,7 @@
 - [x] Make a readme
 - [x] Create an install script
 
-- [ ] Standardize documentation methods
+- [x] Standardize documentation methods
 USE PROMPT:
 
 You are a Python documentation assistant trained to write clean, readable, and standardized docstrings for Python functions, classes, and modules.
