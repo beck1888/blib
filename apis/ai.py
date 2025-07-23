@@ -39,14 +39,15 @@ class AI:
         # Lock-in the model the user wants to use
         self.model = model
 
-    def __can_respond(self) -> bool:
-        # Ensures the last message is from a user so we're not generating when we're not supposed to
-        return self.chat_log[-1]['role'] == 'user'
+    # def __can_respond(self) -> bool:
+    #     # Ensures the last message is from a user so we're not generating when we're not supposed to
+    #     return self.chat_log[-1]['role'] == 'user'
     
     def __ephemeral_gen(self, override_messages: list[dict[str, str]] = None) -> str:
+
         # Generates a message from the assistant with no history by default
-        if not self.__can_respond():
-            raise ValueError("Not ready to respond because last message was not a user message.")
+        # if not self.__can_respond():
+        #     raise ValueError("Not ready to respond because last message was not a user message.")
         
         client = openai.OpenAI(api_key=self.api_key)
         response = client.chat.completions.create(
@@ -80,8 +81,6 @@ class AI:
         # It also doesn't use past context. Just the system prompt if given and the user prompt.
         # Useful for prompts that need a response but shouldn't be referenced in further requests
         # and that shouldn't contain past context (sandboxed request).
-
-        print("WARNING: You've called a method that hasn't been tested for logic yet.") # I wrote this on the plane and couldn't test it yet
 
         # Create the override message logs
         my_override_messages = []
