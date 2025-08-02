@@ -1,33 +1,32 @@
 import tkinter as tk
-import subprocess
-import platform
+from pyob import NSScreen
 
-def elevate_window_priority(root):
-    # Use AppleScript to elevate the window's level to floating (above all other apps)
-    script = f'''
-    tell application "System Events"
-        set frontmost of the first process whose unix id is {root.winfo_id()} to true
-    end tell
-
-    tell application "System Events"
-        set theApp to first application process whose unix id is {root.winfo_id()}
-        set the frontmost of theApp to true
-    end tell
-    '''
-    subprocess.run(['osascript', '-e', script])
+def get_visible_screen_size():
+    screen = NSScreen.mainScreen()
+    visible_frame = screen.visibleFrame()
+    x = int(visible_frame.origin.x)
+    y = int(visible_frame.origin.y)
+    width = int(visible_frame.size.width)
+    height = int(visible_frame.size.height)
+    return x, y, width, height
 
 def create_popup():
     root = tk.Tk()
-    root.title("Priority Popup")
-    root.geometry("400x200")
-    root.attributes("-topmost", True)  # Tkinter level
-    root.lift()  # Bring window to top in stacking order
+    root.title("Floating macOS Popup")
+    root.attributes("-topmost", True)
+    root.lift()
 
-    # macOS-specific: force window to be key and frontmost (in a non-fullscreen way)
-    if platform.system() == "Darwin":
-        root.after(100, lambda: elevate_window_priority(root))
+    x, y, width, height = get_visible_screen_size()
+    # Convert from bottom-left macOS origin to Tk's top-left origin
+    screen_height = root.winfo_screenheight()
+    tk_y = screen_height - y - height
 
-    label = tk.Label(root, text="This is a macOS priority popup!", font=("Helvetica", 16))
+    root.geometry(f"{width}x{height}+{x}+{tk_y}")
+
+    # UI
+    frame = tk.Frame(root, bg="black")
+    frame.pack(fill="both", expand=True)
+    label = tk.Label(frame, text="macOS Floating Popup", fg="white", bg="black", font=("Helvetica", 24))
     label.pack(expand=True)
 
     root.mainloop()
