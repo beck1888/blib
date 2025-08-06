@@ -250,7 +250,7 @@ class Spinner:
         """
         while self.running:
             char = self.spinner_chars[self.idx % len(self.spinner_chars)]
-            sys.stdout.write(f"\r{char} {self.task_name}...")
+            sys.stdout.write(f"\r\033[34m{char}\033[0m {self.task_name}...")
             sys.stdout.flush()
             self.idx += 1
             time.sleep(0.1)
