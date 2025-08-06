@@ -228,6 +228,8 @@ class Spinner:
         self._thread = None
         self.start_time = None  # Track the start time
         self.elapsed_time = 0   # Initialize elapsed time
+        self.ellipsis: str = '...' if not self.task_name.endswith('...') else ''
+
 
     def start(self):
         """
@@ -250,7 +252,7 @@ class Spinner:
         """
         while self.running:
             char = self.spinner_chars[self.idx % len(self.spinner_chars)]
-            sys.stdout.write(f"\r\033[34m{char}\033[0m {self.task_name}...")
+            sys.stdout.write(f"\r\033[34m{char}\033[0m {self.task_name}{self.ellipsis}")
             sys.stdout.flush()
             self.idx += 1
             time.sleep(0.1)
