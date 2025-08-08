@@ -23,8 +23,8 @@ mv "$TEMP_DIR"/blib-main/.[!.]* "$TARGET_DIR"/ 2>/dev/null
 
 rm -rf "$TEMP_DIR"
 
-# Remove non .py/.zsh files
-find "$TARGET_DIR" -type f ! \( -name "*.py" -o -name "*.zsh" \) -exec rm {} \;
+# Remove non .py/.zsh/.mp3 files
+find "$TARGET_DIR" -type f ! \( -name "*.py" -o -name "*.zsh" -o -name "*.mp3" \) -exec rm {} \;
 
 # Delete empty directories
 find "$TARGET_DIR" -type d -empty -delete
