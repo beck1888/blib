@@ -252,7 +252,9 @@ class Spinner:
         """
         while self.running:
             char = self.spinner_chars[self.idx % len(self.spinner_chars)]
-            sys.stdout.write(f"\r\033[34m{char}\033[0m {self.task_name}{self.ellipsis}")
+            current_time = time.time()
+            elapsed = round(current_time - self.start_time, 1) if self.start_time else 0.0
+            sys.stdout.write(f"\r\033[36m{char}\033[0m {self.task_name}{self.ellipsis} ({elapsed}s)")
             sys.stdout.flush()
             self.idx += 1
             time.sleep(0.1)
@@ -292,14 +294,15 @@ class Spinner:
         try:
             self.stop()
             if exc_type is not None:
-                # Show the "x" in red
-                sys.stdout.write(f"\r\033[31m✖\033[0m {self.task_name} [{self.elapsed_time} s]\n\n")
+                # Show the "x" in red, clear the line first
+                sys.stdout.write(f"\r\033[K\033[31m✖\033[0m {self.task_name} ({self.elapsed_time}s)\n\n")
                 # Provide an empty line for better readability
                 # Exception message should be shown automatically by the interpreter
                 # You can uncomment if this gives issues
                 sys.stdout.flush()
             else:
-                sys.stdout.write(f"\r\033[32m✔\033[0m {self.task_name} [{self.elapsed_time} s]\n")
+                # Clear the line first to remove any leftover characters
+                sys.stdout.write(f"\r\033[K\033[32m✔\033[0m {self.task_name} ({self.elapsed_time}s)\n")
                 sys.stdout.flush()
         finally:
             # Make sure the cursor is always shown at the end, even if an error occurs
