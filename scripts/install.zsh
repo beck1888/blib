@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# Script URL: https://raw.githubusercontent.com/geckoDev/blib/refs/heads/main/scripts/install.zsh
+# Script URL: https://raw.githubusercontent.com/geckoHex/blib/refs/heads/main/scripts/install.zsh
 
 # Colors
 GREEN='\033[0;32m'
